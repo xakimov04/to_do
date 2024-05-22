@@ -1,36 +1,33 @@
 import 'package:to_do/models/to_do_models.dart';
 
-class Controller {
-  List<ToDoModels> data = [
-    ToDoModels(title: "uy ishini qilish", time: "09 : 30", select: false),
-    ToDoModels(title: "uy ishini qilish", time: "09 : 30", select: false),
-    ToDoModels(title: "uy ishini qilish", time: "09 : 30", select: false),
+class TodoController {
+  final _todoList = [
+    TodoModel(title: "Yugurish", date: "07:00", checkDone: false),
+    TodoModel(title: "Ovqatlanish", date: "07:30", checkDone: false),
+    TodoModel(title: "Dars qilish", date: "09:00", checkDone: false),
   ];
 
-  int num() {
-    int count = 0;
-    for (var i in data) {
-      if (i.select) {
-        count++;
-      }
-    }
-    return count;
-  }
-  int num2() {
-    int count1 = 0;
-    for (var i in data) {
-      if (!i.select) {
-        count1++;
-      }
-    }
-    return count1;
+  List<TodoModel> get todoList {
+    return [..._todoList];
   }
 
-  void select(index) {
-    data[index].select = !data[index].select;
+  void deletePlan(int index) {
+    _todoList.removeAt(index);
   }
 
-  void remove(index) {
-    data.removeAt(index);
+  void add(String name, String date) {
+    _todoList.add(
+      TodoModel(title: name, date: date, checkDone: false),
+    );
+  }
+
+  int counter() {
+    int counter = 0;
+    for (var i in _todoList) {
+      if (i.checkDone != true) {
+        counter++;
+      }
+    }
+    return counter;
   }
 }

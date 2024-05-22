@@ -1,44 +1,87 @@
 import 'package:flutter/material.dart';
 import 'package:to_do/models/to_do_models.dart';
+import 'package:to_do/views/widgets/dellete_dialog.dart';
+import 'package:to_do/views/widgets/show_dialog.dart';
 
-class BuildListTile extends StatelessWidget {
-  const BuildListTile({
-    super.key,
-    required this.item,
-    required this.delete,
-    required this.select,
-    required this.choose,
-  });
-  final VoidCallback delete;
-  final VoidCallback select;
-  final ToDoModels item;
-  final bool choose;
+class PlanWidget extends StatelessWidget {
+  TodoModel model;
+  VoidCallback onDone;
+  VoidCallback onDeleted;
+  VoidCallback onEdited;
+
+  PlanWidget(
+      {required this.model,
+      required this.onEdited,
+      required this.onDone,
+      required this.onDeleted,
+      super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: IconButton(
-        icon: Icon(
-          choose
-              ? Icons.check_box_outlined
-              : Icons.check_box_outline_blank_rounded,
+    return Card(
+      elevation: 2,
+      child: ListTile(
+        leading: InkWell(
+          borderRadius: BorderRadius.circular(30),
+          onTap: onDone,
+          child: model.checkDone
+              ? const Icon(
+                  Icons.check_box_outlined,
+                  color: Colors.green,
+                )
+              : const Icon(
+                  Icons.check_box_outline_blank_rounded,
+                  color: Colors.grey,
+                ),
         ),
-        onPressed: select,
-      ),
-      title: Text(
-        item.title,
-        style: const TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.w600,
+        title: Text(
+          model.title,
+          style: TextStyle(
+            decoration: model.checkDone ? TextDecoration.lineThrough : null,
+            decorationColor: Colors.black,
+            decorationThickness: 2,
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: model.checkDone ? Colors.grey.shade600 : null,
+          ),
         ),
-      ),
-      subtitle: Text("Vaqti: ${item.time}"),
-      trailing: IconButton(
-        onPressed: delete,
-        icon: const Icon(
-          Icons.delete,
-          color: Colors.red,
-          size: 30,
+        subtitle: Text(
+          model.date,
+          style: TextStyle(color: Colors.grey.shade600),
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+                onPressed: () async {
+                  Map<String, dynamic>? data = await showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AddDialog(model: model);
+                    },
+                  );
+                  model.title = data!["title"];
+                  model.date = data["date"];
+                  onEdited();
+                },
+                icon: const Icon(
+                  Icons.edit,
+                  color: Colors.blueGrey,
+                )),
+            IconButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return DeleteDialog(
+                      onDeleted: onDeleted,
+                    );
+                  },
+                );
+              },
+              icon: const Icon(Icons.delete, color: Colors.red),
+            ),
+          ],
         ),
       ),
     );

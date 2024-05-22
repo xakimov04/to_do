@@ -1,7 +1,7 @@
-class ToDoModels {
+class TodoModel {
   String title;
-  String time;
-  bool select;
+  String date;
+  bool checkDone;
 
-  ToDoModels({required this.title, required this.time, required this.select});
+  TodoModel({required this.title, required this.date, required this.checkDone});
 }
